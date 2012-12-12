@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Frame for T1</title>
+</head>
+<body>
+Hi!<br>
+I am frame #1 from test #1.
+</body>
+<script>
+var xd = new XDomain()
+
+xd.listen(
+{
+	sayThis: function(a)
+	{
+		alert('Child says: ' + a)
+	}
+})
+
+xd.post('sayHello')
+xd.post('sayThese', [3, 7, 13])
+</script>
+
+</html>

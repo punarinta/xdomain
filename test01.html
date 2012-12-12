@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test 01</title>
+	<script src="js/xdomain.js"></script>
+</head>
+<body>
+	<iframe onload="init()" id="myFrame" src="http://some_foreign_domain.com/test01_frame.html"></iframe>
+</body>
+<script>
+function init()
+{
+	var xd = new XDomain('myFrame')
+	xd.listen(
+	{
+		sayHello: function()
+		{
+			alert('Parent says: "Hi there!"')
+		},
+
+		sayThese: function(a, b, c)
+		{
+			alert("Parent says:\na = " + a + "\nb + c = " + (b+c))
+		}
+	})
+	xd.post('sayThis', 'ololo!')
+}
+</script>
+</html>
