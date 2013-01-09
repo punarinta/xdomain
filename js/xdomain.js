@@ -1,8 +1,14 @@
-var XDomain = (function()
+var XDomain = function ()
 {
-	var scanTimer, lastHash, cacheCounter, frameID, remoteDomain, remoteURL, isMaster
+	this.initialize.apply(this, arguments)
+}
 
-	function XDomain(frameID)
+XDomain.prototype =
+{
+	remoteURL:		'',
+	remoteDomain:	'',
+
+	initialize: function(frameID)
 	{
 		this.lastHash = null
 		this.cacheCounter = 1
@@ -22,22 +28,22 @@ var XDomain = (function()
 			this.remoteURL = document.referrer
 		}
 		this.fetchFrameData()
-	}
+	},
 
 	// TODO: add support for frames that are not yet loaded
 
-	XDomain.prototype.fetchFrameData = function()
+	fetchFrameData: function()
 	{
 		if(document.getElementById(this.frameID) || !this.isMaster)
 		{
 			var a = document.createElement('a')
-			if(this.isMaster) this.remoteURL = document.getElementById(frameID).src
+			if(this.isMaster) this.remoteURL = document.getElementById(this.frameID).src
 			a.href = this.remoteURL
 			this.remoteDomain = a.hostname
 		}
-	}
+	},
 
-	XDomain.prototype.post = function(x, val)
+	post: function(x, val)
 	{
 		var o, message = x
 		if(typeof val !== 'undefined') message += '=' + typeof val === 'string' ? val : JSON.stringify(val)
@@ -58,12 +64,11 @@ var XDomain = (function()
 		else
 		{
 			if(this.hasPostMessage || window.opera) parent.postMessage(message, this.remoteURL.replace(/([^:]+:\/\/[^\/]+).*/, '$1'))
-			else if(window.opera) parent.contentWindow.postMessage(message, this.remoteURL.replace(/([^:]+:\/\/[^\/]+).*/, '$1'))
 			else parent.location = this.remoteURL.replace( /#.*$/, '' ) + '#' + (+new Date) + (this.cacheCounter++) + '&' + message
 		}
-	}
+	},
 
-	XDomain.prototype.receiveMessage = function(callback, delay)
+	receiveMessage: function(callback, delay)
 	{
 		if(this.hasPostMessage || window.opera)
 		{
@@ -98,9 +103,9 @@ var XDomain = (function()
 				}, delay )
 			}
 		}
-	}
+	},
 
-	XDomain.prototype.listen = function(map)
+	listen: function(map)
 	{
 		this.receiveMessage(function(e)
 		{
@@ -114,4 +119,4 @@ var XDomain = (function()
 			}
 		})
 	}
-})
+};
